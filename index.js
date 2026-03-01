@@ -20,7 +20,7 @@ mongoose.connect(uri)
 
 const allowedOrigins = [
  "https://finora-y3fy.netlify.app",
-  "https://finora-dashboard-y3fy.netlify.app/",
+  "https://finora-dashboard-y3fy.netlify.app",
 ];
 
 app.use(cors({
