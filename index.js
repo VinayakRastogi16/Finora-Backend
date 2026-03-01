@@ -30,7 +30,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/", (req,res)=>{
-    res.send("Hello Bitch");
+    res.send("Server running");
 });
 
 app.get('/allHoldings', async (req,res)=>{
