@@ -19,7 +19,7 @@ const app = express();
 mongoose.connect(uri)
 
 const allowedOrigins = [
-  `${process.env.FRONTEND_URL}`,
+ "https://finora-y3fy.netlify.app",
   "http://localhost:3001",
 ];
 
@@ -99,7 +99,7 @@ app.post("/signup", async (req,res)=>{
         res.cookie("token", token, {
             httpOnly:true,
             secure:process.env.NODE_ENV === "production",
-            sameSite:"strict",
+            sameSite:"none",
             maxAge: 3*24*60*60*1000,
         })
 
@@ -146,8 +146,8 @@ app.post("/login",async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: trur,
+      sameSite: "none",
       maxAge: 3 * 24 * 60 * 60 * 1000,
     });
 
