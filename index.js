@@ -19,8 +19,8 @@ const app = express();
 mongoose.connect(uri)
 
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001",
+ "https://finora-y3fy.netlify.app",
+  "https://finora-dashboard-y3fy.netlify.app",
 ];
 
 app.use(cors({
@@ -30,7 +30,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/", (req,res)=>{
-    res.send("Hello Bitch");
+    res.send("Server running");
 });
 
 app.get('/allHoldings', async (req,res)=>{
@@ -159,16 +159,6 @@ app.post("/sell", async (req, res) => {
   }
 });
 
-app.get("/holding/:name", async (req, res) => {
-  try {
-    const holding = await HoldingsModel.findOne({ name: req.params.name });
-
-    res.json(holding || null);
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
-});
-
 app.post("/signup", async (req,res)=>{
     try{
         const {email, password, username} = req.body;
@@ -181,11 +171,13 @@ app.post("/signup", async (req,res)=>{
         if(existingUser){
             return res.status(409).json({message:"User already exists"});
         }
+        
+        const hashedPassword = await bcrypt.hash(password,10);
 
         const user = await UserModel.create({
             email,
             username,
-            password,
+            password:hashedPassword,
         })
 
 
@@ -194,7 +186,7 @@ app.post("/signup", async (req,res)=>{
         res.cookie("token", token, {
             httpOnly:true,
             secure:process.env.NODE_ENV === "production",
-            sameSite:"strict",
+            sameSite:"none",
             maxAge: 3*24*60*60*1000,
         })
 
@@ -241,8 +233,8 @@ app.post("/login",async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 3 * 24 * 60 * 60 * 1000,
     });
 
