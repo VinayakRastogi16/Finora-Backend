@@ -10,7 +10,7 @@ import UserModel from "./models/UserModel.js";
 import bcrypt from "bcryptjs";
 import createSecretToken from './utils/SecretToken.js';
 import cookieParser from "cookie-parser";
-import verifyUser from "./middleware/Auth.js";
+import verifyUser from "./middlewares/Auth.js";
 
 
 
