@@ -9,6 +9,10 @@ import OrdersModel from './models/OrdersModel.js';
 import UserModel from "./models/UserModel.js";
 import bcrypt from "bcryptjs";
 import createSecretToken from './utils/SecretToken.js';
+import cookieParser from "cookie-parser";
+import verifyUser from "./middleware/Auth.js";
+
+
 
 const PORT = process.env.PORT || 8080;
 const uri = process.env.DB_URL;
@@ -23,29 +27,39 @@ const allowedOrigins = [
   "https://finora-dashboard-y3fy.netlify.app",
 ];
 
+app.use(cookieParser());
 app.use(cors({
     origin:allowedOrigins,
     credentials:true,
 }));
 app.use(express.json());
 
+
 app.get("/", (req,res)=>{
     res.send("Server running");
 });
 
-app.get('/allHoldings', async (req,res)=>{
+
+app.get("/verify", verifyUser, async (req, res) => {
+  res.json({
+    success: true,
+    user: req.user,
+  });
+});
+
+app.get('/allHoldings', verifyUser, async (req,res)=>{
     let allHoldings = await HoldingsModel.find({});
 
     res.json(allHoldings);
 })
 
-app.get('/allPositions', async (req,res)=>{
+app.get('/allPositions', verifyUser, async (req,res)=>{
     let allPositions = await PositionModel.find({});
 
     res.json(allPositions);
 })
 
-app.post("/newOrder", async(req,res)=>{
+app.post("/newOrder", verifyUser, async(req,res)=>{
     let newOrder = new OrdersModel({
         name: req.body.name,
         qty: req.body.qty,
@@ -59,7 +73,7 @@ app.post("/newOrder", async(req,res)=>{
 
 })
 
-app.post("/buy", async (req, res) => {
+app.post("/buy", verifyUser, async (req, res) => {
   try {
     let { name, qty, price } = req.body;
 
@@ -119,7 +133,7 @@ app.post("/buy", async (req, res) => {
   }
 });
 
-app.post("/sell", async (req, res) => {
+app.post("/sell", verifyUser, async (req, res) => {
   try {
     let { name, qty, price } = req.body;
 
@@ -264,7 +278,7 @@ app.post("/logout", (req, res) => {
   });
 });
 
-app.get('/allOrders', async (req,res)=>{
+app.get('/allOrders', verifyUser, async (req,res)=>{
     let allOrders = await OrdersModel.find({});
 
     res.json(allOrders);
