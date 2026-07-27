@@ -251,6 +251,19 @@ app.post("/login",async (req, res) => {
   }
 });
 
+app.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
+
 app.get('/allOrders', async (req,res)=>{
     let allOrders = await OrdersModel.find({});
 
